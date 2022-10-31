@@ -1,4 +1,5 @@
 # from crypt import methods
+# from crypt import methods
 import pickle
 from flask import Flask, request, app, jsonify, url_for, render_template
 import numpy as np
@@ -23,6 +24,15 @@ def predict_api():
     output=regmodel.predict(new_data)
     print(output[0])
     return(jsonify(output[0]))
+
+@app.route('/predict',methods=['POST'])
+def predict():
+    data=[float(x) for x in request.form.values()]
+    final_input=scaler.transform(np.array(list(data)).reshape(1,-1))
+    print(final_input)
+    output = regmodel.predict(final_input)
+    return render_template("home.html", prediction_text="The House price Prediction is {}".format(output[0]))
+
 
 
 if __name__=="__main__":
